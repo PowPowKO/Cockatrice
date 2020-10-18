@@ -8,9 +8,10 @@
 # echo "No content yet in travis-bouncer.sh"
 
 #print to logs checken, exit code
-if [ -z $(git diff --name-only --diff-filter=d $TRAVIS_COMMIT_RANGE | grep -v "\.md$") ]; then
-          echo "Only Markdown files were modified, skipping CI run.";
-          exit;
+if [ -z $(git diff --name-only --diff-filter=d $TRAVIS_COMMIT_RANGE | grep -v "\.md$") ]
+then
+  echo "Only Markdown files were modified, skipping CI run."
+  exit
 fi
 
 exit 0
