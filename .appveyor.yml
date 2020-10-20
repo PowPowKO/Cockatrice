@@ -1,5 +1,8 @@
 version: build {build}
 
+# For now using a custom script to pass CI tests and allow non-admin merges on .md only changes
+# See https://github.com/appveyor/ci/issues/1848
+#
 # Skipping commits affecting specific files (GitHub only).
 # More details here: https://www.appveyor.com/docs/appveyor-yml and https://www.appveyor.com/docs/how-to/filtering-commits
 #skip_commits:
@@ -15,7 +18,6 @@ version: build {build}
 #    - '**/*.md'
 #    - Dockerfile
 #    - LICENSE
-#for now using a custom script to pass CI tests and allow non-admin merges, see https://github.com/appveyor/ci/issues/1848
 
 skip_branch_with_pr: true
 
@@ -47,7 +49,6 @@ install:
         Write-Host "Only Markdown files were modified, skipping CI run."
         Exit-AppVeyorBuild
       }
-    
     - cd C:\Tools\vcpkg
     - git pull -q
     - .\bootstrap-vcpkg.bat
