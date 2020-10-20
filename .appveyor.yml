@@ -2,19 +2,20 @@ version: build {build}
 
 # Skipping commits affecting specific files (GitHub only).
 # More details here: https://www.appveyor.com/docs/appveyor-yml and https://www.appveyor.com/docs/how-to/filtering-commits
-skip_commits:
-  files:
-    - .ci/travis-*
-    - .github/
-    - .tx/
-    - webclient/
-    - .clang-format
-    - .*ignore
-    - .codacy.yml
-    - .travis.yml
-    - '**/*.md'
-    - Dockerfile
-    - LICENSE
+#skip_commits:
+#  files:
+#    - .ci/travis-*
+#    - .github/
+#    - .tx/
+#    - webclient/
+#    - .clang-format
+#    - .*ignore
+#    - .codacy.yml
+#    - .travis.yml
+#    - '**/*.md'
+#    - Dockerfile
+#    - LICENSE
+#for now using a custom script to pass CI tests and allow non-admin merges, see https://github.com/appveyor/ci/issues/1848
 
 skip_branch_with_pr: true
 
@@ -38,6 +39,14 @@ environment:
           cmake_generator: Visual Studio 15 2017
           cmake_toolset: v141
           vcpkg_arch: x86
+
+init:
+  - ps: |
+      $range = "$env:APPVEYOR_REPO_BRANCH..$env:APPVEYOR_PULL_REQUEST_HEAD_COMMIT"
+      if (-not (git diff --name-only --diff-filter=d $range | Where-Object { $_ -NotMatch "\.md$" })) {
+        Write-Host "Only Markdown files were modified, skipping CI run."
+        Exit-AppVeyorBuild
+      }
 
 install:
     - cd C:\Tools\vcpkg
